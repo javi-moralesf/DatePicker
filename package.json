@@ -1,0 +1,13 @@
+{
+  "name": "datepicker-widget",
+  "version": "1.0.0",
+  "dependencies": {
+    "jquery": "*",
+    "moment": "*"
+  },
+  "main": "js/datepicker.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/javi-moralesf/DatePicker.git"
+  }
+}

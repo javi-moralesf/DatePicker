@@ -378,18 +378,30 @@ var jQuery = require('jquery');
                       data.weeks[indic].days[indic2].classname.push('datepickerSelected');
                     }
 
-                    if (options.mode == 'range' && (val == options.date[0] || val == options.date[2])) {
-                      data.weeks[indic].days[indic2].classname.push('datepickerFirstSelected');
-                    }
-                    else if (options.mode == 'range' && (val+DatePicker.endOfDay == options.date[1] || val+DatePicker.endOfDay == options.date[3])) {
-                      data.weeks[indic].days[indic2].classname.push('datepickerLastSelected');
-                    }
+                    if(options.mode == 'range'){
+                      if (val == options.date[0]) {
+                        data.weeks[indic].days[indic2].classname.push('datepickerFirstSelected');
+                        data.weeks[indic].days[indic2].classname.push('active');
+                      }
+                      if (val == options.date[2]) {
+                        data.weeks[indic].days[indic2].classname.push('datepickerFirstSelected');
+                        data.weeks[indic].days[indic2].classname.push('inactive');
+                      }
+                      if (val + DatePicker.endOfDay == options.date[1]) {
+                        data.weeks[indic].days[indic2].classname.push('datepickerLastSelected');
+                        data.weeks[indic].days[indic2].classname.push('active');
+                      }
+                      if (val + DatePicker.endOfDay == options.date[3]) {
+                        data.weeks[indic].days[indic2].classname.push('datepickerLastSelected');
+                        data.weeks[indic].days[indic2].classname.push('inactive');
+                      }
+                      if (typeof(options.date[2]) !== 'undefined' && val >= options.date[2] && val <= options.date[3]) {
+                        data.weeks[indic].days[indic2].classname.push('inactive');
+                      }
+                      else if (val >= options.date[0] && val <= options.date[1]) {
+                        data.weeks[indic].days[indic2].classname.push('active');
+                      }
 
-                    if (options.mode == 'range' && val >= options.date[0] && val <= options.date[1]) {
-                      data.weeks[indic].days[indic2].classname.push('active');
-                    }
-                    else if (options.mode == 'range' && typeof(options.date[2]) !== 'undefined' && val >= options.date[2] && val <= options.date[3]) {
-                      data.weeks[indic].days[indic2].classname.push('inactive');
                     }
 
                   }
@@ -802,7 +814,7 @@ var jQuery = require('jquery');
                       // for range mode, create the other end of the range
                       if (date.length == 1) date.push(new Date(date[0]));
                       date[1] = ((new Date(date[1])).setHours(23, 59, 59, 0)).valueOf();
-                      if(typeof date[3] != 'undefined'){
+                      if (typeof date[3] != 'undefined') {
                         date[3] = ((new Date(date[3])).setHours(23, 59, 59, 0)).valueOf();
                       }
                     }

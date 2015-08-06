@@ -350,6 +350,20 @@ var jQuery = require('jquery');
                     text: date.getDate(),
                     classname: []
                   };
+                  if(typeof(options.availableDates) !== 'undefined'){
+                    var available = false;
+
+                    for(var availableI in options.availableDates){
+                      if(date.getTime() >= options.availableDates[availableI].startDate && date.getTime() <= options.availableDates[availableI].endDate){
+                        available = true;
+                        break;
+                      }
+                    }
+                    if(!available){
+                      data.weeks[indic].days[indic2].classname.push('datepickerDisabled');
+                    }
+                  }
+
                   var today = new Date();
                   if (today.getDate() == date.getDate() && today.getMonth() == date.getMonth() && today.getYear() == date.getYear()) {
                     data.weeks[indic].days[indic2].classname.push('datepickerToday');
@@ -968,6 +982,30 @@ var jQuery = require('jquery');
               }
             });
           },
+          /**
+           * Sets the DatePicker clickable dates.
+           *
+           * @param Date|String|int|Array date The currently selected date(s).
+           *        This can be: a single date, an array
+           *        of two dates (sets a range when 'mode' is 'range'), or an array of
+           *        any number of dates (selects all dates when 'mode' is 'multiple'.
+           *        The supplied dates can be any one of: Date object, milliseconds
+           *        (as from date.getTime(), date.valueOf()), or a date string
+           *        parseable by Date.parse().
+           *
+           * @see DatePickerSetDate()
+           */
+          setAvailableDates: function(date) {
+            return this.each(function() {
+              if ($(this).data('datepickerId')) {
+                var cal = $('#' + $(this).data('datepickerId'));
+                var options = cal.data('datepicker');
+                options.availableDates  = normalizeDate(options.mode, date);
+
+                fill(cal.get(0));
+              }
+            });
+          },
 
           /**
            * Returns the currently selected date(s) and the datepicker element.
@@ -1031,6 +1069,7 @@ var jQuery = require('jquery');
     DatePickerHide: DatePicker.hidePicker,
     DatePickerShow: DatePicker.showPicker,
     DatePickerSetDate: DatePicker.setDate,
+    DatePickerSetAvailableDates: DatePicker.setAvailableDates,
     DatePickerGetDate: DatePicker.getDate,
     DatePickerClear: DatePicker.clear,
     DatePickerLayout: DatePicker.fixLayout

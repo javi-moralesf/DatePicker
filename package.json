@@ -1,6 +1,6 @@
 {
   "name": "datepicker-widget",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "dependencies": {
     "jquery": "*",
     "moment": "*"

@@ -388,7 +388,10 @@ var jQuery = require('jquery');
                   var val = date.valueOf();
                   if (options.date && (!$.isArray(options.date) || options.date.length > 0)) {
 
-                    if (fromUser.selected || options.date == val || $.inArray(val, options.date) > -1 || (options.mode == 'range' && val >= options.date[0] && val <= options.date[1]) || (options.mode == 'range' && typeof(options.date[2]) !== 'undefined' && val >= options.date[2] && val <= options.date[3])) {
+                    if (fromUser.selected || options.date == val || $.inArray(val, options.date) > -1 ||
+                        options.mode == 'range' && val >= options.date[0] && val <= options.date[1] ||
+                        options.mode == 'range' && typeof(options.date[2]) !== 'undefined' && val >= options.date[2] && val <= options.date[3]) {
+
                       data.weeks[indic].days[indic2].classname.push('datepickerSelected');
                     }
 
@@ -396,19 +399,24 @@ var jQuery = require('jquery');
                       if (val == options.date[0]) {
                         data.weeks[indic].days[indic2].classname.push('datepickerFirstSelected');
                         data.weeks[indic].days[indic2].classname.push('active');
+                        data.weeks[indic].days[indic2].classname.push(getRange(0, options));
                       }
-                      if (val == options.date[2]) {
-                        data.weeks[indic].days[indic2].classname.push('datepickerFirstSelected');
-                        data.weeks[indic].days[indic2].classname.push('inactive');
-                      }
-                      if (val + DatePicker.endOfDay == options.date[1]) {
+                      else if (val + DatePicker.endOfDay == options.date[1]) {
                         data.weeks[indic].days[indic2].classname.push('datepickerLastSelected');
                         data.weeks[indic].days[indic2].classname.push('active');
+                        data.weeks[indic].days[indic2].classname.push(getRange(1, options));
                       }
-                      if (val + DatePicker.endOfDay == options.date[3]) {
+                      else if (val == options.date[2]) {
+                        data.weeks[indic].days[indic2].classname.push('datepickerFirstSelected');
+                        data.weeks[indic].days[indic2].classname.push('inactive');
+                        data.weeks[indic].days[indic2].classname.push(getRange(2, options));
+                      }
+                      else if (val + DatePicker.endOfDay == options.date[3]) {
                         data.weeks[indic].days[indic2].classname.push('datepickerLastSelected');
                         data.weeks[indic].days[indic2].classname.push('inactive');
+                        data.weeks[indic].days[indic2].classname.push(getRange(3, options));
                       }
+
                       if (typeof(options.date[2]) !== 'undefined' && val >= options.date[2] && val <= options.date[3]) {
                         data.weeks[indic].days[indic2].classname.push('inactive');
                       }
@@ -440,6 +448,14 @@ var jQuery = require('jquery');
                 html = tmpl(tpl.months.join(''), data) + html;
                 tblCal.append(html);
               }
+            },
+
+            getRange = function(position, options){
+              var range = 'firstRange';
+              if(options.date.length > 2){
+                range = (position < 2 && options.firstPeriod) || (position >= 2 && !options.firstPeriod) ? 'firstRange' : 'secondRange';
+              }
+              return range;
             },
 
             /**
@@ -965,15 +981,17 @@ var jQuery = require('jquery');
            *        parseable by Date.parse().
            * @param boolean shiftTo if true, shifts the visible calendar to the
            *        newly set date(s)
+           * @param boolean firstPeriod if true, in the comparative range mode we are on the first range
            *
            * @see DatePickerSetDate()
            */
-          setDate: function(date, shiftTo) {
+          setDate: function(date, shiftTo, firstPeriod) {
             return this.each(function() {
               if ($(this).data('datepickerId')) {
                 var cal = $('#' + $(this).data('datepickerId'));
                 var options = cal.data('datepicker');
                 options.date = normalizeDate(options.mode, date);
+                options.firstPeriod = firstPeriod;
 
                 if (shiftTo) {
                   options.current = new Date(options.mode != 'single' ? options.date[0] : options.date);

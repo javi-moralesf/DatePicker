@@ -631,13 +631,16 @@ var jQuery = require('jquery');
                                         }
                                         break;
                                     case 'range':
-                                        if (!options.lastSel) {
+                                        var invalidDate = isNaN(options.date[0]);
+                                        if (!options.lastSel || invalidDate) {
                                             // first click: set to the start of the day
                                             options.date[0] = (tmp.setHours(0, 0, 0, 0)).valueOf();
+                                            if (invalidDate) {
+                                                options.lastSel = true;
+                                            }
                                         }
                                         // get the very end of the day clicked
                                         val = (tmp.setHours(23, 59, 59, 0)).valueOf();
-
                                         if (val < options.date[0]) {
                                             // second range click < first
                                             options.date[1] = options.date[0] + DatePicker.endOfDay;  // starting date + 1 day
@@ -647,7 +650,9 @@ var jQuery = require('jquery');
                                             // initial range click, or final range click >= first
                                             options.date[1] = val;
                                         }
-                                        options.lastSel = !options.lastSel;
+                                        if (!invalidDate) {
+                                            options.lastSel = !options.lastSel;
+                                        }
                                         changedRange = !options.lastSel;
                                         break;
                                     default:

@@ -561,10 +561,28 @@ var jQuery = require('jquery');
 
                                 if (options.mode == 'range') {
                                     // range, select the whole month
-                                    options.date[0] = (tmp.setHours(0, 0, 0, 0)).valueOf();
-                                    tmp.addDays(tmp.getMaxDays() - 1);
-                                    tmp.setHours(23, 59, 59, 0);
-                                    options.date[1] = tmp.valueOf();
+                                    var dateStart = new Date(tmp.valueOf()),
+                                        dateEnd = new Date(tmp.valueOf());
+                                    dateStart.setHours(0, 0, 0, 0);
+                                    dateEnd.addDays(dateEnd.getMaxDays() - 1);
+                                    dateEnd.setHours(23, 59, 59, 0);
+                                    
+                                    if (typeof options.availableDates !== 'undefined') {
+                                        var available = false;
+
+                                        for (var availableI in options.availableDates) {
+                                            if (dateStart.getTime() >= options.availableDates[availableI].startDate && dateStart.getTime() <= options.availableDates[availableI].endDate && dateEnd.getTime() >= options.availableDates[availableI].startDate && dateEnd.getTime() <= options.availableDates[availableI].endDate) {
+                                                available = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!available) {
+                                            return false;
+                                        }
+                                    }
+
+                                    options.date[0] = dateStart.valueOf();
+                                    options.date[1] = dateEnd.valueOf();
                                     fillIt = true;
                                     changed = true;
                                     options.lastSel = false;

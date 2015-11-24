@@ -388,20 +388,6 @@ var jQuery = require('jquery');
                             var fromUser = options.onRenderCell(el, date);
                             var val = date.valueOf();
                             if (options.date && (!$.isArray(options.date) || options.date.length > 0)) {
-                                if (fromUser.selected || options.date == val || $.inArray(val, options.date) > -1 ||
-                                    options.mode == 'range' && val >= options.date[0] && val <= options.date[1] ||
-                                    options.mode == 'range' && typeof(options.date[2]) !== 'undefined' && val >= options.date[2] && val <= options.date[3])
-                                {
-                                    if (data.weeks[indic].days[indic2].classname.indexOf('firstRange') !== -1) {
-                                        firstRange = true;
-                                    } else if (data.weeks[indic].days[indic2].classname.indexOf('secondRange') !== -1) {
-                                        firstRange = false;
-                                    }
-
-                                    data.weeks[indic].days[indic2].classname.push('datepickerSelected');
-                                    data.weeks[indic].days[indic2].classname.push((firstRange) ? 'firstRange' : 'secondRange');
-                                }
-
                                 if (options.mode == 'range') {
                                     if (val == options.date[0]) {
                                         data.weeks[indic].days[indic2].classname.push('datepickerFirstSelected');
@@ -430,6 +416,20 @@ var jQuery = require('jquery');
                                     else if (val >= options.date[0] && val <= options.date[1]) {
                                         data.weeks[indic].days[indic2].classname.push('active');
                                     }
+                                }
+
+                                if (fromUser.selected || options.date == val || $.inArray(val, options.date) > -1 ||
+                                    options.mode == 'range' && val >= options.date[0] && val <= options.date[1] ||
+                                    options.mode == 'range' && typeof(options.date[2]) !== 'undefined' && val >= options.date[2] && val <= options.date[3])
+                                {
+                                    if (data.weeks[indic].days[indic2].classname.indexOf('firstRange') !== -1) {
+                                        firstRange = true;
+                                    } else if (data.weeks[indic].days[indic2].classname.indexOf('secondRange') !== -1) {
+                                        firstRange = false;
+                                    }
+
+                                    data.weeks[indic].days[indic2].classname.push('datepickerSelected');
+                                    data.weeks[indic].days[indic2].classname.push((firstRange) ? 'firstRange' : 'secondRange');
                                 }
                             }
                             if (fromUser.disabled) {

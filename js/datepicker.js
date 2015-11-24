@@ -304,6 +304,7 @@ var jQuery = require('jquery');
                     var options = $(el).data('datepicker');
                     var cal = $(el);
                     var currentCal = Math.floor(options.calendars / 2), date, data, dow, month, cnt = 0, days, indic, indic2, html, tblCal;
+                    var firstRange = true;
 
                     cal.find('td>table tbody').remove();
                     for (var i = 0; i < options.calendars; i++) {
@@ -387,12 +388,18 @@ var jQuery = require('jquery');
                             var fromUser = options.onRenderCell(el, date);
                             var val = date.valueOf();
                             if (options.date && (!$.isArray(options.date) || options.date.length > 0)) {
-
                                 if (fromUser.selected || options.date == val || $.inArray(val, options.date) > -1 ||
                                     options.mode == 'range' && val >= options.date[0] && val <= options.date[1] ||
-                                    options.mode == 'range' && typeof(options.date[2]) !== 'undefined' && val >= options.date[2] && val <= options.date[3]) {
+                                    options.mode == 'range' && typeof(options.date[2]) !== 'undefined' && val >= options.date[2] && val <= options.date[3])
+                                {
+                                    if (data.weeks[indic].days[indic2].classname.indexOf('firstRange') !== -1) {
+                                        firstRange = true;
+                                    } else if (data.weeks[indic].days[indic2].classname.indexOf('secondRange') !== -1) {
+                                        firstRange = false;
+                                    }
 
                                     data.weeks[indic].days[indic2].classname.push('datepickerSelected');
+                                    data.weeks[indic].days[indic2].classname.push((firstRange) ? 'firstRange' : 'secondRange');
                                 }
 
                                 if (options.mode == 'range') {
@@ -423,9 +430,7 @@ var jQuery = require('jquery');
                                     else if (val >= options.date[0] && val <= options.date[1]) {
                                         data.weeks[indic].days[indic2].classname.push('active');
                                     }
-
                                 }
-
                             }
                             if (fromUser.disabled) {
                                 data.weeks[indic].days[indic2].classname.push('datepickerDisabled');
